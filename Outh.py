@@ -4,21 +4,24 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
+CREDENTIALS_PATH = 'C:/Users/ramma/Documents/Ram/Preparation/AI Agents/EmailSpamCleaner-ESC-Credentials-Tokens/credential.json'
+TOKEN_PATH = 'C:/Users/ramma/Documents/Ram/Preparation/AI Agents/EmailSpamCleaner-ESC-Credentials-Tokens/token.json'
+
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/gmail.modify'] # Or gmail.readonly if you just want to identify
 
 def get_gmail_service():
     creds = None
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if os.path.exists(TOKEN_PATH):
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'credential.json', SCOPES)
+                CREDENTIALS_PATH, SCOPES)
             creds = flow.run_local_server(port=0)
-        with open('token.json', 'w') as token:
+        with open(TOKEN_PATH, 'w') as token:
             token.write(creds.to_json())
     service = build('gmail', 'v1', credentials=creds)
     return service
